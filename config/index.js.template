@@ -1,0 +1,15 @@
+module.exports = {
+  Redis: {
+    host: "127.0.0.1",//redis host
+    port: 6379,//redis 端口
+    password: "",//redis password
+    db: 9
+  },
+  qiniuConfig: {
+    accessKey:"",
+    secretKey:"",
+    urlPrefix:"",
+    bucket:"",
+    namePrefix:""
+  }
+}
