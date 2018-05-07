@@ -13,6 +13,7 @@ const redis = new Redis(config.Redis);
 const uuid = require('uuid');
 const qiniuUpload = require('./lib/qiniuUpload');
 const md5 = require('md5');
+const fs = require('fs');
 
 app.use(loggerAsync())
 
@@ -32,7 +33,7 @@ main.post("/",async ( ctx )=>{
   let md5Url = md5(url);
   let imgUrl = await redis.get(md5Url);
   if(imgUrl){
-    ctx.body = imgUrl;
+    ctx.body = {code:0,imageUrl:imgUrl};
     return;
   }
 
@@ -51,6 +52,7 @@ main.post("/",async ( ctx )=>{
  if(result){
    let uploadResult = await qiniuUpload.uploadFile(path.join(__dirname,"./temp/"+fileId+".png"))
    await redis.set(md5Url,uploadResult.url,"EX",12*60*60*1000)
+   fs.unlinkSync(path.join(__dirname,"./temp/"+fileId+".png"));
    ctx.body = {code:0,imageUrl:uploadResult.url};
  }else{
    ctx.body = {code:1,message:"error"};
